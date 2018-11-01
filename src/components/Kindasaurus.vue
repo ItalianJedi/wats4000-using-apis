@@ -1,5 +1,5 @@
 <template>
-  <div class="rhymesaurus">
+  <div class="kindasaurus">
     <p>
       <router-link v-bind:to="{ name: 'Kindasaurus'}">Kindasaurus</router-link>
       &bull;
@@ -8,7 +8,7 @@
       <router-link v-bind:to="{ name: 'Starwars'}">Star Wars</router-link>
     </p>
     <form v-on:submit.prevent="findWords">
-      <p>Find rhymes for <input type="text" v-model="rhyme"> related to <input type="text" v-model="phrase"> <button type="submit">Search</button></p>
+      <p>Find words kinda like <input type="text" v-model="kinda"> <button type="submit">Search</button></p>
     </form>
     <ul v-if="results && results.length > 0" class="results">
       <li v-for="item in results" class="item">
@@ -34,13 +34,12 @@
 import axios from 'axios';
 
 export default {
-  name: 'Rhymesaurus',
+  name: 'Kindasaurus',
   data () {
     return {
       results: null,
       errors: [],
-      phrase: '',
-      rhyme: ''
+      kinda: ''
     }
   },
 
@@ -48,8 +47,7 @@ export default {
     findWords: function() {
       axios.get('https://api.datamuse.com/words', {
         params: {
-          ml: this.phrase,
-          rel_rhy: this.rhyme
+          rel_spc: this.kinda
         }
       })
       .then( response => {
@@ -65,7 +63,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.rhymesaurus {
+.kindasaurus {
   font-size: 1.4rem;
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="rhymesaurus">
+  <div class="starwars">
     <p>
       <router-link v-bind:to="{ name: 'Kindasaurus'}">Kindasaurus</router-link>
       &bull;
@@ -7,19 +7,18 @@
       &bull;
       <router-link v-bind:to="{ name: 'Starwars'}">Star Wars</router-link>
     </p>
-    <form v-on:submit.prevent="findWords">
-      <p>Find rhymes for <input type="text" v-model="rhyme"> related to <input type="text" v-model="phrase"> <button type="submit">Search</button></p>
+    <form v-on:submit.prevent="findCharacter">
+      <p>This character, <input type="text" v-model="name"> appears in these films: <button type="submit">Search</button></p>
     </form>
     <ul v-if="results && results.length > 0" class="results">
       <li v-for="item in results" class="item">
-        <p><strong>{{ item.word }}</strong></p>
-        <p>{{ item.score }}</p>
+        <p><strong>{{ findCharacter.films }}</strong></p>
       </li>
     </ul>
 
     <div v-else-if="results && results.length === 0" class="no-results">
-      <h2>No Words Found</h2>
-      <p>Please adjust your search to find more words.</p>
+      <h2>No Films Found</h2>
+      <p>You must be thinking about a character from the Expanded Universe.</p>
     </div>
 
     <ul v-if="errors.length > 0" class="errors">
@@ -34,22 +33,22 @@
 import axios from 'axios';
 
 export default {
-  name: 'Rhymesaurus',
+  name: 'Starwars',
   data () {
     return {
       results: null,
       errors: [],
-      phrase: '',
-      rhyme: ''
+      films: '',
+      name: ''
     }
   },
 
   methods: {
-    findWords: function() {
-      axios.get('https://api.datamuse.com/words', {
+    findCharacter: function() {
+      axios.get('https://swapi.co/api/people', {
         params: {
-          ml: this.phrase,
-          rel_rhy: this.rhyme
+          films: this.films,
+          name: this.name
         }
       })
       .then( response => {
@@ -65,7 +64,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.rhymesaurus {
+.starwars {
   font-size: 1.4rem;
 }
 
