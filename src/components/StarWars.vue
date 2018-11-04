@@ -7,12 +7,17 @@
       &bull;
       <router-link v-bind:to="{ name: 'Starwars'}">Star Wars</router-link>
     </p>
-    <form v-on:submit.prevent="findCharacter">
-      <p>This character, <input type="text" v-model="name"> appears in these films: <button type="submit">Search</button></p>
-    </form>
+    <div class="forms">
+      <label for="findCharacter">Pick a character:</label>
+      <select>
+        <option disabled value="">Please select one</option>
+        <option v-for="character in characterFilm" v-bind:value="films">{{ films }}</option>
+    </select>
+    </div>
+
     <ul v-if="results && results.length > 0" class="results">
       <li v-for="item in results" class="item">
-        <p><strong>{{ findCharacter.films }}</strong></p>
+        <p><strong>{{ data.films }}</strong></p>
       </li>
     </ul>
 
@@ -39,16 +44,17 @@ export default {
       results: null,
       errors: [],
       films: '',
-      name: ''
+      name: '',
+      people: []
     }
   },
 
   methods: {
-    findCharacter: function() {
-      axios.get('https://swapi.co/api/people', {
+    characterFilm: function() {
+      axios.get('https://swapi.co/api/people/', {
         params: {
           films: this.films,
-          name: this.name
+          character: this.people
         }
       })
       .then( response => {
