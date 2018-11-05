@@ -9,15 +9,19 @@
     </p>
     <div class="forms">
       <label for="findCharacter">Pick a character:</label>
-      <select>
-        <option disabled value="">Please select one</option>
-        <option v-for="character in characterFilm" v-bind:value="films">{{ films }}</option>
-    </select>
+      <form v-on:submit.prevent="onSubmit">
+        <select v-model="selected.id">
+          <option disabled value="">Please select one</option>
+          <!-- <option v-for="character in characterFilm" v-bind:value="films">{{ films }}</option> -->
+          <option v-for="character in people" v-bind:key="character.id" :value="character.id">{{ character.name }}</option>
+        </select>
+        <button type="submit">Go</button>
+      </form>
     </div>
 
-    <ul v-if="results && results.length > 0" class="results">
-      <li v-for="item in results" class="item">
-        <p><strong>{{ data.films }}</strong></p>
+    <ul v-if="films && films.length > 0" class="results">
+      <li v-for="film in films" class="film">
+        <p><strong>{{ film }}</strong></p>
       </li>
     </ul>
 
@@ -43,26 +47,31 @@ export default {
     return {
       results: null,
       errors: [],
-      films: '',
+      films: [],
       name: '',
-      people: []
+      people: [],
+      selected: { id: 0 },
     }
   },
-
-  methods: {
-    characterFilm: function() {
-      axios.get('https://swapi.co/api/people/', {
-        params: {
-          films: this.films,
-          character: this.people
-        }
+  mounted: function () {
+    axios.get('https://swapi.co/api/people/')
+      .then(response => {
+        this.results = response.data.results;
+        this.people = this.results.map((x, idx) => {
+          return { "id": idx, "name": x.name,"films":x.films };
+        })
       })
-      .then( response => {
-        this.results = response.data;
-      })
-      .catch ( error => {
+      .catch(error => {
         this.errors.push(error);
       })
+    // this.$nextTick(function () {
+    //   // Code that will run only after the
+    //   // entire view has been rendered
+    // })
+  },
+  methods: {
+    onSubmit: function () {
+      this.films = this.people[this.selected.id].films;
     }
   }
 }
